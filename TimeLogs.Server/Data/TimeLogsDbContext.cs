@@ -12,6 +12,8 @@
 
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<UserProject> UsersProjects { get; set; }
+
         public DbSet<TimeLog> TimeLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

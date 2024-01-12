@@ -1,5 +1,7 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
+using Services;
+using Services.Implementations;
 
 internal class Program
 {
@@ -16,13 +18,18 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IProjectService, ProjectService>();
+        builder.Services.AddScoped<ITimeLogService, TimeLogService>();
+
         var app = builder.Build();
 
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TimeLogsDbContext>();
 
+        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
-        context.Database.Migrate();
+        //context.Database.Migrate();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
