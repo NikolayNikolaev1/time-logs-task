@@ -30,7 +30,7 @@
                     LastName = u.LastName,
                     Email = u.Email,
                     // TODO: Sum hours in time.
-                    HoursWorked = u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours)
+                    HoursWorked = Math.Round(u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours), 2)
                     //utl.TimeLogs.Aggregate(
                     //    TimeSpan.Zero,
                     //    (sumSoFar, nextMyObject) => sumSoFar + TimeSpan.FromHours(nextMyObject.Hours)).TotalHours
