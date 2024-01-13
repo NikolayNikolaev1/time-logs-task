@@ -2,8 +2,11 @@
 {
     using Data;
     using Data.Models;
+    using DTO;
     using Microsoft.EntityFrameworkCore;
     using System;
+
+    using static Core.Constants;
 
     public class TimeLogService : ITimeLogService
     {
@@ -11,6 +14,28 @@
 
         public TimeLogService(TimeLogsDbContext dbContext)
             => this.dbContext = dbContext;
+
+        public async Task<ICollection<TimeLogDTO>> AllAsync(DateTime? dateFrom, DateTime? dateTo, int page)
+        {
+            return await this.dbContext
+                .TimeLogs
+                .Where(tl => dateFrom != null && dateTo != null 
+                    ? tl.Date > dateFrom && tl.Date < dateTo
+                    : true)
+                .OrderBy(tl => tl.Date)
+                .Skip(((page - 1) * PER_PAGE_COUNT))
+                .Take(PER_PAGE_COUNT)
+                .Select(tl => new TimeLogDTO
+                    {
+                        Id = tl.Id,
+                        UserFirstName = tl.UserProject.User.FirstName,
+                        UserLastName = tl.UserProject.User.LastName,
+                        ProjectName = tl.UserProject.Project.Name,
+                        Date = tl.Date,
+                        Hours = tl.Hours
+                    })
+                .ToListAsync();
+        }
 
         public async Task<bool> ContainsUserProjectDateAsync(int userId, int projectId, DateTime date)
         {

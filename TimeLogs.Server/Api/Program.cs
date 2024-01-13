@@ -27,7 +27,7 @@ internal class Program
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TimeLogsDbContext>();
 
-        context.Database.EnsureDeleted();
+        //context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         //context.Database.Migrate();
 

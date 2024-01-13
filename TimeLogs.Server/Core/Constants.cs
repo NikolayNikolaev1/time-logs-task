@@ -39,6 +39,8 @@
 
         public const int USER_PROJECTS_MIN_COUNT = 1;
 
+        public const int PER_PAGE_COUNT = 10;
+
         public const int PROJECTS_COUNT = 3;
 
         public static readonly string[] PROJECT_NAMES = { "My own", "Free Time", "Work" };
