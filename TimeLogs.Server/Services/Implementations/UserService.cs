@@ -57,6 +57,23 @@
         public async Task DeleteAllAsync()
             => await this.dbContext.Users.ExecuteDeleteAsync();
 
+        public async Task<UserDTO> FindByIdAsync(int id)
+        {
+            return await this.dbContext
+                .Users
+                .Select(u => new UserDTO
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    // TODO: Sum hours in time.
+                    HoursWorked = Math.Round(u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours), 2)
+                })
+                .FirstAsync(u => u.Id == id);
+                
+        }
+
         public async Task<double> GetTotalWorkedHours(int userId, DateTime? date)
         {
             User user = await this.dbContext.Users.FirstAsync(u => u.Id == userId);

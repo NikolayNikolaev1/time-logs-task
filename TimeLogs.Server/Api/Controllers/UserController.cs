@@ -26,5 +26,18 @@
                 dateFrom?.ToUniversalTime().AddHours(2),
                 dateTo?.ToUniversalTime().AddHours(2)));
         }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDTO))]
+        public async Task<IActionResult> Get(
+            int id,
+            [FromQuery(Name = "dateFrom")] string? from,
+            [FromQuery(Name = "dateTo")] string? to)
+        {
+            DateTime? dateFrom = DateTime.TryParse(from, out _) ? DateTime.Parse(from) : null;
+            DateTime? dateTo = DateTime.TryParse(to, out _) ? DateTime.Parse(to) : null;
+
+            return Ok(await this.userService.FindByIdAsync(id));
+        }
     }
 }
