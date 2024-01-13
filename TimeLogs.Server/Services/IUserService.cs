@@ -1,7 +1,11 @@
 ﻿namespace Services
 {
+    using DTO;
+
     public interface IUserService
     {
+        Task<ICollection<UserDTO>> AllAsync(DateTime? dateFrom, DateTime? dateTo);
+
         Task<int> CreateAsync(string firstName, string lastName, string email);
 
         Task DeleteAllAsync();

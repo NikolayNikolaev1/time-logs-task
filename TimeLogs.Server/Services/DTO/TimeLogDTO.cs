@@ -8,6 +8,8 @@
 
         public string UserLastName { get; set; } = null!;
 
+        public string UserEmail { get; set; } = null!;
+
         public string ProjectName { get; set; } = null!;
 
         public DateTime Date { get; set; }

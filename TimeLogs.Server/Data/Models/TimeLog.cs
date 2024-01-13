@@ -6,7 +6,7 @@
 
         public DateTime Date { get; set; }
 
-        public double Hours { get; set; }
+        public double Hours { get; set; } // TODO: Change to float.
 
         public int UserProjectId { get; set; }
 

@@ -26,8 +26,8 @@
             int pageNumber = int.TryParse(page, out pageNumber) ? pageNumber : 1;
 
             return Ok(await this.timeLogServce.AllAsync(
-                dateFrom?.ToUniversalTime(),
-                dateTo?.ToUniversalTime(),
+                dateFrom?.ToUniversalTime().AddHours(2),
+                dateTo?.ToUniversalTime().AddHours(2),
                 pageNumber));
         }
     }

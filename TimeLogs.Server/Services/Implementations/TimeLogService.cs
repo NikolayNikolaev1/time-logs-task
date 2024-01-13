@@ -20,7 +20,7 @@
             return await this.dbContext
                 .TimeLogs
                 .Where(tl => dateFrom != null && dateTo != null 
-                    ? tl.Date > dateFrom && tl.Date < dateTo
+                    ? tl.Date >= dateFrom && tl.Date <= dateTo
                     : true)
                 .OrderBy(tl => tl.Date)
                 .Skip(((page - 1) * PER_PAGE_COUNT))
@@ -30,6 +30,7 @@
                         Id = tl.Id,
                         UserFirstName = tl.UserProject.User.FirstName,
                         UserLastName = tl.UserProject.User.LastName,
+                        UserEmail = tl.UserProject.User.Email,
                         ProjectName = tl.UserProject.Project.Name,
                         Date = tl.Date,
                         Hours = tl.Hours

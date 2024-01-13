@@ -2,8 +2,10 @@
 {
     using Data;
     using Data.Models;
+    using DTO;
     using Microsoft.EntityFrameworkCore;
     using System;
+    using System.Linq;
 
     public class UserService : IUserService
     {
@@ -11,6 +13,31 @@
 
         public UserService(TimeLogsDbContext dbContext)
             => this.dbContext = dbContext;
+
+        public async Task<ICollection<UserDTO>> AllAsync(DateTime? dateFrom, DateTime? dateTo)
+        {
+            return await this.dbContext
+                .Users
+                // TODO: Find a way to filter by date in grandchildren collection.
+                .Where(u => u.Projects.Any(p => p.TimeLogs
+                    .Any(tl => dateFrom != null && dateTo != null
+                        ? tl.Date >= dateFrom && tl.Date <= dateTo
+                        : true)))
+                .Select(u => new UserDTO
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    // TODO: Sum hours in time.
+                    HoursWorked = u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours)
+                    //utl.TimeLogs.Aggregate(
+                    //    TimeSpan.Zero,
+                    //    (sumSoFar, nextMyObject) => sumSoFar + TimeSpan.FromHours(nextMyObject.Hours)).TotalHours
+                    //new TimeSpan(utl.TimeLogs.Sum(tl => TimeSpan.FromHours(tl.Hours).Ticks)).TotalHours
+                })
+                .ToListAsync();
+        }
 
         public async Task<int> CreateAsync(string firstName, string lastName, string email)
         {
