@@ -24,7 +24,8 @@
 
             return Ok(await this.projectService.AllAsync(
                 dateFrom?.ToUniversalTime().AddHours(2),
-                dateTo?.ToUniversalTime().AddHours(2)));
+                dateTo?.ToUniversalTime().AddHours(2)
+                ));
         }
     }
 }

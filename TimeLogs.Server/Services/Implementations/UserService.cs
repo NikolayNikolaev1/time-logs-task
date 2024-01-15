@@ -18,23 +18,22 @@
         {
             return await this.dbContext
                 .Users
-                // TODO: Find a way to filter by date in grandchildren collection.
-                .Where(u => u.Projects.Any(p => p.TimeLogs
-                    .Any(tl => dateFrom != null && dateTo != null
-                        ? tl.Date >= dateFrom && tl.Date <= dateTo
-                        : true)))
                 .Select(u => new UserDTO
                 {
                     Id = u.Id,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Email = u.Email,
-                    // TODO: Sum hours in time.
-                    HoursWorked = Math.Round(u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours), 2)
-                    //utl.TimeLogs.Aggregate(
-                    //    TimeSpan.Zero,
-                    //    (sumSoFar, nextMyObject) => sumSoFar + TimeSpan.FromHours(nextMyObject.Hours)).TotalHours
-                    //new TimeSpan(utl.TimeLogs.Sum(tl => TimeSpan.FromHours(tl.Hours).Ticks)).TotalHours
+                    HoursWorked = u.Projects.SelectMany(p => p.TimeLogs.Select(tl => new
+                    {
+                        tl.Id,
+                        tl.Date,
+                        tl.Hours
+                    }))
+                    .Where(tl => dateFrom != null && dateTo != null
+                        ? tl.Date >= dateFrom && tl.Date <= dateTo
+                        : true)
+                    .Sum(tl => tl.Hours)
                 })
                 .ToListAsync();
         }
@@ -57,20 +56,29 @@
         public async Task DeleteAllAsync()
             => await this.dbContext.Users.ExecuteDeleteAsync();
 
-        public async Task<UserDTO> FindByIdAsync(int id)
+        public async Task<UserDTO> FindByIdAsync(int id, DateTime? dateFrom, DateTime? dateTo)
         {
             return await this.dbContext
                 .Users
+                .Where(u => u.Id == id)
                 .Select(u => new UserDTO
                 {
                     Id = u.Id,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Email = u.Email,
-                    // TODO: Sum hours in time.
-                    HoursWorked = Math.Round(u.Projects.SelectMany(p => p.TimeLogs).Sum(tl => tl.Hours), 2)
+                    HoursWorked = u.Projects.SelectMany(p => p.TimeLogs.Select(tl => new
+                    {
+                        tl.Id,
+                        tl.Date,
+                        tl.Hours
+                    }))
+                    .Where(tl => dateFrom != null && dateTo != null
+                        ? tl.Date >= dateFrom && tl.Date <= dateTo
+                        : true)
+                    .Sum(tl => tl.Hours)
                 })
-                .FirstAsync(u => u.Id == id);
+                .FirstAsync();
                 
         }
 

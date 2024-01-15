@@ -37,7 +37,10 @@
             DateTime? dateFrom = DateTime.TryParse(from, out _) ? DateTime.Parse(from) : null;
             DateTime? dateTo = DateTime.TryParse(to, out _) ? DateTime.Parse(to) : null;
 
-            return Ok(await this.userService.FindByIdAsync(id));
+            return Ok(await this.userService.FindByIdAsync(
+                id,
+                dateFrom?.ToUniversalTime().AddHours(2),
+                dateTo?.ToUniversalTime().AddHours(2)));
         }
     }
 }

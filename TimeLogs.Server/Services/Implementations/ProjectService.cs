@@ -4,7 +4,6 @@
     using Data.Models;
     using DTO;
     using Microsoft.EntityFrameworkCore;
-    using System;
     using System.Collections.Generic;
 
     public class ProjectService : IProjectService
@@ -18,18 +17,24 @@
         {
             return await this.dbContext
                 .Projects
-                // TODO: Add filter by dateRange in grandchildren collection.
-                .Where(p => p.Users.Any(u => u.TimeLogs
-                    .Any(tl => dateFrom != null && dateTo != null
-                        ? tl.Date >= dateFrom && tl.Date <= dateTo
-                        : true))
-                )
                 .Select(p => new ProjectDTO
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    // TODO: Sum hours in time.
-                    HoursWorked = Math.Round(p.Users.SelectMany(u => u.TimeLogs).Sum(tl => tl.Hours), 2)
+                    HoursWorked = p.Users.SelectMany(u => u.TimeLogs.Select(tl => new
+                    {
+                        tl.Id,
+                        tl.Date,
+                        tl.Hours
+                    }))
+                    .Where(tl => dateFrom != null && dateTo != null
+                        ? tl.Date >= dateFrom && tl.Date <= dateTo
+                        : true)
+                    .Sum(tl => tl.Hours)
+                    // TODO: Sum hours and minutes correctly.
+                    //.Aggregate(
+                    //    TimeSpan.Zero,
+                    //    (sumSoFar, nextMyObject) => sumSoFar + TimeSpan.FromHours(nextMyObject.Hours)).TotalHours
                 })
                 .ToListAsync();
         }

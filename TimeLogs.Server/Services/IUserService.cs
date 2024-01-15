@@ -10,7 +10,7 @@
 
         Task DeleteAllAsync();
 
-        Task<UserDTO> FindByIdAsync(int id);
+        Task<UserDTO> FindByIdAsync(int id, DateTime? dateFrom, DateTime? dateTo);
 
         Task<double> GetTotalWorkedHours(int userId, DateTime? date);
     }
