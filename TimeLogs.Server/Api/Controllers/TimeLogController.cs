@@ -1,6 +1,7 @@
 ﻿namespace Api.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Models;
     using Services;
     using Services.DTO;
 
@@ -15,7 +16,7 @@
             this.timeLogServce = timeLogService;
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<TimeLogDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ListResponse<TimeLogDTO>))]
         public async Task<IActionResult> Get(
             [FromQuery(Name = "dateFrom")] string? from,
             [FromQuery(Name = "dateTo")] string? to,
@@ -25,10 +26,20 @@
             DateTime? dateTo = DateTime.TryParse(to, out _) ? DateTime.Parse(to) : null;
             int pageNumber = int.TryParse(page, out pageNumber) ? pageNumber : 1;
 
-            return Ok(await this.timeLogServce.AllAsync(
+            ICollection<TimeLogDTO> timeLogs = await this.timeLogServce.AllAsync(
                 dateFrom?.ToUniversalTime().AddHours(2),
                 dateTo?.ToUniversalTime().AddHours(2),
-                pageNumber));
+                pageNumber);
+
+            int timeLogsCount = await this.timeLogServce.CountAsync(
+                dateFrom?.ToUniversalTime().AddHours(2),
+                dateTo?.ToUniversalTime().AddHours(2));
+
+            return Ok(new ListResponse<TimeLogDTO>
+            {
+                Data = timeLogs,
+                TotalCount = timeLogsCount
+            });
         }
     }
 }

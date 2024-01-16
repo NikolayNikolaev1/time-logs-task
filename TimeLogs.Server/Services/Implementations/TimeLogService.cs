@@ -51,6 +51,16 @@
                 .AnyAsync(tl => tl.UserProjectId == userProject.Id && tl.Date == date);
         }
 
+        public async Task<int> CountAsync(DateTime? dateFrom, DateTime? dateTo)
+        {
+            return await this.dbContext
+                .TimeLogs
+                .Where(tl => dateFrom != null && dateTo != null
+                    ? tl.Date >= dateFrom && tl.Date <= dateTo
+                    : true)
+                .CountAsync();
+        }
+
         public async Task CreateAsync(int userId, int projectId, DateTime date, double hours)
         {
             UserProject? userProject = await this.dbContext
