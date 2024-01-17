@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import TimeLog from "../../models/time-log.model";
 import apiClient from "../../services/apiClient";
+import useFilterContext from "../../context/FilterContext";
 
 const useTimeLogsTable = () => {
+  const { dateRange } = useFilterContext();
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
 
   const [paginationModel, setPaginationModel] = useState<{
@@ -37,7 +39,10 @@ const useTimeLogsTable = () => {
         method: "get",
         queryParams: {
           page: paginationModel.page + 1,
-          // TODO: Date filter
+          dateRange: {
+            dateFrom: dateRange?.startDate ?? "",
+            dateTo: dateRange?.endDate ?? "",
+          },
         },
       }).then((response) => {
         setTimeLogs(response.data);
@@ -45,7 +50,7 @@ const useTimeLogsTable = () => {
         setIsLoading(false);
       });
     })();
-  }, [paginationModel]);
+  }, [paginationModel, dateRange]);
 
   return {
     timeLogs,

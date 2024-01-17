@@ -36,6 +36,8 @@ const apiClient = async <T>({
       throw { statusCode: response.status };
     }
 
+    if (response.status === 204) return;
+
     return response.json();
   });
 };

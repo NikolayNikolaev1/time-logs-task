@@ -1,12 +1,16 @@
 import { Box } from "@mui/material";
-import "./App.css";
 import TimeLogsTable from "./components/TimeLogsTable";
+import { FilterProvider } from "./context/FilterContext";
+import Header from "./components/Header/Header";
 
 const App = () => {
   return (
-    <Box sx={{ width: "50%" }}>
-      <TimeLogsTable />
-    </Box>
+    <FilterProvider>
+      <Header />
+      <Box sx={{ width: "50%" }}>
+        <TimeLogsTable />
+      </Box>
+    </FilterProvider>
   );
 };
 
