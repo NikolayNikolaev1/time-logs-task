@@ -1,11 +1,11 @@
 import { Stack } from "@mui/material";
 import DateRangePicker from "../DateRangePicker";
 import ResetButton from "../ResetButton";
-import useFilterContext from "../../context/FilterContext";
+import useApplicationContext from "../../context/ApplicationContext";
 import { DateRange } from "moment-range";
 
 const Header = () => {
-  const { handleDateRangeChange } = useFilterContext();
+  const { handleDateRangeChange } = useApplicationContext();
 
   return (
     <Stack direction="row">

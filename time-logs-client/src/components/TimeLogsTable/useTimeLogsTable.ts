@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import TimeLog from "../../models/time-log.model";
 import apiClient from "../../services/apiClient";
-import useFilterContext from "../../context/FilterContext";
+import useApplicationContext from "../../context/ApplicationContext";
+import User from "../../models/user.model";
 
 const useTimeLogsTable = () => {
-  const { dateRange } = useFilterContext();
+  const { dateRangeFilter, handleComparedChartBarChange } =
+    useApplicationContext();
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
 
   const [paginationModel, setPaginationModel] = useState<{
@@ -19,12 +21,22 @@ const useTimeLogsTable = () => {
 
   const [rowCountState, setRowCountState] = useState<number>(10);
 
-  const compareOnClick = (
+  const compareOnClick = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    timeLogId: number,
+    userId: number,
   ) => {
     e.stopPropagation();
-    console.log({ tester: timeLogId });
+
+    await apiClient<User>({
+      url: `User/${userId}`,
+      method: "get",
+    }).then((response) => {
+      const { firstName, lastName, hoursWorked } = response;
+      handleComparedChartBarChange({
+        label: `${firstName} ${lastName}`,
+        value: hoursWorked,
+      });
+    });
   };
 
   useEffect(() => {
@@ -40,8 +52,8 @@ const useTimeLogsTable = () => {
         queryParams: {
           page: paginationModel.page + 1,
           dateRange: {
-            dateFrom: dateRange?.startDate ?? "",
-            dateTo: dateRange?.endDate ?? "",
+            dateFrom: dateRangeFilter?.startDate ?? "",
+            dateTo: dateRangeFilter?.endDate ?? "",
           },
         },
       }).then((response) => {
@@ -50,7 +62,7 @@ const useTimeLogsTable = () => {
         setIsLoading(false);
       });
     })();
-  }, [paginationModel, dateRange]);
+  }, [paginationModel, dateRangeFilter]);
 
   return {
     timeLogs,

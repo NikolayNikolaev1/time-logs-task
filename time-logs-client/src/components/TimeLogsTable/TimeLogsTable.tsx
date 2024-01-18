@@ -51,7 +51,7 @@ const TimeLogsTable = () => {
           renderCell: (params) => {
             return (
               <Button
-                onClick={(e) => compareOnClick(e, params.row.id)}
+                onClick={(e) => compareOnClick(e, params.row.userId)}
                 variant="contained"
               >
                 Compare

@@ -28,6 +28,7 @@
                 .Select(tl => new TimeLogDTO
                     {
                         Id = tl.Id,
+                        UserId = tl.UserProject.UserId,
                         UserFirstName = tl.UserProject.User.FirstName,
                         UserLastName = tl.UserProject.User.LastName,
                         UserEmail = tl.UserProject.User.Email,

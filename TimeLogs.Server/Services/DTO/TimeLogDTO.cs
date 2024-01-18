@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
 
+        public int UserId { get; set; }
+
         public string UserFirstName { get; set; } = null!;
 
         public string UserLastName { get; set; } = null!;
