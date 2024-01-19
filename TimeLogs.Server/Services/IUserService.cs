@@ -6,6 +6,8 @@
     {
         Task<ICollection<UserDTO>> AllAsync(DateTime? dateFrom, DateTime? dateTo);
 
+        Task<bool> ContainsEmailAsync(string email);
+
         Task<int> CreateAsync(string firstName, string lastName, string email);
 
         Task DeleteAllAsync();

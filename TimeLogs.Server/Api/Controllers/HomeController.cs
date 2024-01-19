@@ -72,6 +72,13 @@
                 string lastName = USER_LAST_NAMES[random.Next(0, USER_LAST_NAMES.Length)];
                 string emailDomain = USER_EMAIL_DOMAINS[random.Next(0, USER_EMAIL_DOMAINS.Length)];
                 string email = $"{firstName.ToLower()}.{lastName.ToLower()}@{emailDomain}";
+
+                if (await this.userService.ContainsEmailAsync(email))
+                {
+                    totalUsers--;
+                    continue;
+                }
+
                 int userProjectsCount = random.Next(USER_PROJECTS_MIN_COUNT, USER_PROJECTS_MAX_COUNT);
 
                 int userId = await this.userService.CreateAsync(firstName, lastName, email);
@@ -109,7 +116,12 @@
 
                 if (hoursWorked < MIN_HOURS_PER_DATE) continue;
                 // Rounds to the bigger hour if it exceeds 59 minutes.
-                if (hoursWorked - Math.Truncate(hoursWorked) > 0.5) hoursWorked = Math.Ceiling(hoursWorked);
+                if (hoursWorked - Math.Truncate(hoursWorked) > 0.5)
+                {
+                    if (Math.Floor(hoursWorked) != 0) hoursWorked = Math.Floor(hoursWorked);
+                    else hoursWorked = Math.Ceiling(hoursWorked);
+
+                }
                 
                 await this.timeLogService.CreateAsync(userId, projectId, date, hoursWorked);
 

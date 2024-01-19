@@ -38,6 +38,9 @@
                 .ToListAsync();
         }
 
+        public async Task<bool> ContainsEmailAsync(string email)
+            => await this.dbContext.Users.AnyAsync(u => u.Email == email);
+
         public async Task<int> CreateAsync(string firstName, string lastName, string email)
         {
             User user = new User
