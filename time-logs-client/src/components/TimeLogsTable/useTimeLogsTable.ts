@@ -8,6 +8,7 @@ const useTimeLogsTable = () => {
   const { dateRangeFilter, handleComparedChartBarChange } =
     useApplicationContext();
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const [paginationModel, setPaginationModel] = useState<{
     page: number;
@@ -27,16 +28,28 @@ const useTimeLogsTable = () => {
   ) => {
     e.stopPropagation();
 
+    setSelectedUserId(userId);
+
     await apiClient<User>({
       url: `User/${userId}`,
       method: "get",
-    }).then((response) => {
-      const { firstName, lastName, hoursWorked } = response;
+      queryParams: {
+        dateRange: {
+          dateFrom: dateRangeFilter?.startDate ?? "",
+          dateTo: dateRangeFilter?.endDate ?? "",
+        },
+      },
+    }).then((response) =>
       handleComparedChartBarChange({
-        label: `${firstName} ${lastName}`,
-        value: hoursWorked,
-      });
-    });
+        label: response.email,
+        value: response.hoursWorked,
+      }),
+    );
+  };
+
+  const unselectOnClick = () => {
+    setSelectedUserId(null);
+    handleComparedChartBarChange(null);
   };
 
   useEffect(() => {
@@ -64,13 +77,23 @@ const useTimeLogsTable = () => {
     })();
   }, [paginationModel, dateRangeFilter]);
 
+  useEffect(() => {
+    setSelectedUserId(null);
+    setPaginationModel({
+      page: 0,
+      pageSize: 10,
+    });
+  }, [dateRangeFilter]);
+
   return {
     timeLogs,
+    selectedUserId,
     paginationModel,
     setPaginationModel,
     rowCountState,
     isLoading,
     compareOnClick,
+    unselectOnClick,
   };
 };
 

@@ -1,6 +1,7 @@
-import { Chart } from "react-google-charts";
+import { Chart, ReactGoogleChartProps } from "react-google-charts";
 
-interface BarChartProps {
+interface CompareChartProps extends ReactGoogleChartProps {
+  title: string;
   resourceLabel: string;
   metricLabel: string;
   data: (string | number)[][];
@@ -10,12 +11,16 @@ interface BarChartProps {
   };
 }
 
-const BarChart = ({
+const CompareChart = ({
+  title,
   resourceLabel,
   metricLabel,
   data,
   comparedData,
-}: BarChartProps) => {
+  ...props
+}: CompareChartProps) => {
+  const { chartType, ...rest } = props;
+
   return (
     <Chart
       chartType="ComboChart"
@@ -31,14 +36,15 @@ const BarChart = ({
       height="400px"
       legendToggle
       options={{
-        title: "Top",
-        vAxis: { title: "Cups" },
-        hAxis: { title: "Month" },
+        title,
+        vAxis: { title: metricLabel },
+        hAxis: { title: resourceLabel },
         seriesType: "bars",
         series: { 1: { type: "line" } },
       }}
+      {...rest}
     />
   );
 };
 
-export default BarChart;
+export default CompareChart;

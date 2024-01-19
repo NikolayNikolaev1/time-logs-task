@@ -7,7 +7,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 import TimeLogsTable from "../TimeLogsTable";
-import BarChart from "../BarChart";
+import CompareChart from "../CompareChart";
 import useContent from "./useContent";
 import { ChartResourceType } from "./utils";
 import useApplicationContext from "../../context/ApplicationContext";
@@ -26,20 +26,23 @@ const Content = () => {
       <Box sx={{ width: "50%" }}>
         <TimeLogsTable />
       </Box>
-      <BarChart
-        resourceLabel={`Top 10 ${selectedResource} by Hours worked`}
+      <CompareChart
+        title={`Top ${selectedResource} by Hours worked`}
+        resourceLabel={selectedResource}
         metricLabel="Hours"
         //@ts-ignore
         // TODO: filter out undefined data from compared without using ts-ignore.
         data={
           selectedResource === ChartResourceType.Users
             ? [
-                ...topUsers.map((u) => [
-                  `${u.firstName} ${u.lastName}`,
-                  u.hoursWorked,
-                ]),
+                ...topUsers.map((u) => [u.email, u.hoursWorked]),
                 [comparedChartBar?.label, comparedChartBar?.value],
-              ].filter((v) => !v.includes(undefined))
+              ]
+                .filter((v) => !v.includes(undefined))
+                .filter(
+                  (value, index, self) =>
+                    index === self.findIndex((t) => t[0] === value[0]),
+                )
             : topProjects.map((p) => [p.name, p.hoursWorked])
         }
         comparedData={

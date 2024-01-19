@@ -5,12 +5,15 @@ import useApplicationContext from "../../context/ApplicationContext";
 import { DateRange } from "moment-range";
 
 const Header = () => {
-  const { handleDateRangeChange } = useApplicationContext();
+  const { handleDateRangeChange, handleComparedChartBarChange } =
+    useApplicationContext();
 
   return (
     <Stack direction="row">
       <DateRangePicker
         onChange={(dateRange: DateRange | null) => {
+          handleComparedChartBarChange(null);
+
           if (dateRange === null) {
             handleDateRangeChange(null);
             return;

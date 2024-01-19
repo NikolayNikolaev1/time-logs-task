@@ -6,11 +6,13 @@ import { parseDate } from "./utils";
 const TimeLogsTable = () => {
   const {
     timeLogs,
+    selectedUserId,
     paginationModel,
     setPaginationModel,
     rowCountState,
     isLoading,
     compareOnClick,
+    unselectOnClick,
   } = useTimeLogsTable();
 
   return (
@@ -49,12 +51,20 @@ const TimeLogsTable = () => {
           sortable: false,
           filterable: false,
           renderCell: (params) => {
-            return (
+            return selectedUserId !== params.row.userId ? (
               <Button
                 onClick={(e) => compareOnClick(e, params.row.userId)}
                 variant="contained"
               >
                 Compare
+              </Button>
+            ) : (
+              <Button
+                onClick={unselectOnClick}
+                variant="contained"
+                color="error"
+              >
+                Unselect
               </Button>
             );
           },
