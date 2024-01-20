@@ -5,7 +5,7 @@ const ResetButton = () => {
   const { isLoading, handleResetOnClick } = useResetButton();
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box>
       <Button variant="outlined" onClick={handleResetOnClick}>
         Reset
       </Button>

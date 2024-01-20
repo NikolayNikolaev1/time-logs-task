@@ -5,7 +5,7 @@ import originalMoment from "moment";
 import { DateRange, extendMoment } from "moment-range";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Popper, Typography } from "@mui/material";
 
 import useDateRangePicker from "./useDateRangePicker";
 
@@ -35,9 +35,12 @@ const DateRangePicker = ({
         borderRadius: "4px",
         height: "36px",
         marginBottom: "30px",
+
+        background: "#fff",
+        zIndex: "700000",
       }}
     >
-      <Button  onClick={handleOpenChange}>
+      <Button onClick={handleOpenChange}>
         {dateRange !== null ? (
           <Typography component="span">
             {`${dateRange.start.format("YYYY-MM-DD")} - ${dateRange.end
@@ -53,7 +56,14 @@ const DateRangePicker = ({
         <DeleteIcon />
       </Button>
 
-      {isOpen && (
+      <Popper
+        sx={{
+          background: "#fff",
+          zIndex: "700000",
+          marginTop: "3%"
+        }}
+        open={isOpen}
+      >
         <ReactDateRangePicker
           selectionType="range"
           firstOfWeek={1}
@@ -61,7 +71,7 @@ const DateRangePicker = ({
           onSelect={handleDateRangeOnSelect}
           {...props}
         />
-      )}
+      </Popper>
     </Box>
   );
 };
