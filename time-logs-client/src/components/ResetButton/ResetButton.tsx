@@ -1,15 +1,14 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import useResetButton from "./useResetButton";
 
 const ResetButton = () => {
-  const { isLoading, handleResetOnClick } = useResetButton();
+  const { handleResetOnClick } = useResetButton();
 
   return (
     <Box>
       <Button variant="outlined" onClick={handleResetOnClick}>
         Reset
       </Button>
-      {isLoading && <CircularProgress />}
     </Box>
   );
 };

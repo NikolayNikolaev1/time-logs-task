@@ -60,7 +60,7 @@ const DateRangePicker = ({
         sx={{
           background: "#fff",
           zIndex: "700000",
-          marginTop: "3%"
+          marginTop: "3%",
         }}
         open={isOpen}
       >

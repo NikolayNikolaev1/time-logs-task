@@ -1,11 +1,11 @@
-import { useState } from "react";
 import apiClient from "../../services/apiClient";
+import useApplicationContext from "../../context/ApplicationContext";
 
 const useResetButton = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { startLoading } = useApplicationContext();
 
   const handleResetOnClick = async () => {
-    setIsLoading(true);
+    startLoading();
 
     await apiClient({
       url: "Clear",
@@ -18,7 +18,7 @@ const useResetButton = () => {
     });
   };
 
-  return { isLoading, handleResetOnClick };
+  return { handleResetOnClick };
 };
 
 export default useResetButton;
